@@ -43,30 +43,23 @@ By injecting this structured memory into the agent's system prompt as a set of s
 ## 🛠️ Architecture
 
 * **Language:** Julia (Base)
-  Chosen for its high-performance string manipulation and speed when tailing massive CI log streams.
-
 * **Agent Memory:** Hindsight by Vectorize
-  Used for vector-based semantic retrieval of past event trajectories.
-
 * **Data Structure:** C++-style `ExperienceRecord` structs
-  These structs serialize cleanly into JSON payloads to ensure the memory retains its strict schema.
 
 ---
 
 ## 🚀 Quickstart (Running the Daemon)
 
-To run the demonstration daemon locally and watch the agent recall past trajectories in real-time:
-
 ### 1. Clone the repository
 
-```bash
+```bash id="3w5q1x"
 git clone https://github.com/YOUR_USERNAME/ci-hindsight-daemon.git
 cd ci-hindsight-daemon
 ```
 
 ### 2. Run the Julia daemon
 
-```bash
+```bash id="7c6b9p"
 julia ci_hindsight_daemon.jl
 ```
 
@@ -79,24 +72,32 @@ You will see the daemon:
 * Retrieve a past failed attempt
 * Immediately pivot to the correct socket-level patch
 
-This demonstrates real-time learning and memory reuse.
-
 ---
 
 ## 📝 Lessons Learned
 
 ### 1. Relevance Beats Context Size
 
-The "Needle in a Haystack" problem is real. Stuffing massive prompts with raw historical logs doesn't help the agent—it confuses it. Precise, highly relevant memories retrieved via vector search provide better guardrails than massive context windows.
+Precise, highly relevant memories retrieved via vector search provide better guardrails than massive context windows.
 
 ### 2. Failures Matter as Much as Successes
 
-Storing a failed debugging attempt is just as critical as storing a success. Supplying the agent with **negative constraints** prevents it from falling down the same rabbit hole twice and drastically reduces API latency.
+Storing failed debugging attempts prevents repeated mistakes and reduces latency.
 
 ### 3. Structure the Memory
 
-If you feed an LLM unstructured text of past events, it struggles to differentiate between what was suggested and what actually worked. Forcing the LLM to output its actions into strict, defined fields (`Tool`, `Input`, `Output`, `Success`) reduces hallucinations to near zero.
+Using strict fields (`Tool`, `Input`, `Output`, `Success`) reduces hallucinations.
 
 ### 4. Memory Decay is the Next Frontier
 
-Codebases evolve rapidly. A successful fix from six months ago might be an anti-pattern today. Implementing a **Time-To-Live (TTL)** on stored experiences ensures the agent doesn't forcefully apply outdated architecture patterns to modern code.
+Using TTL ensures outdated fixes are not reused in evolving codebases.
+
+---
+
+## 👥 People Involved
+
+* Anita Mjelwa
+* Hasna Majid
+* Minza Aaron
+* Fatma Makame
+* Blue Francis
